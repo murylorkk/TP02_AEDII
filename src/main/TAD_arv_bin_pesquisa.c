@@ -46,6 +46,21 @@ int buscar_arv_bin_pesquisa(Arvore_bin* arv, int valor){
     }
 }
 
+int obter_altura_bin(Arvore_bin* no) {
+    if (no == NULL){
+        return 0;
+    }
+    int alt_esq = obter_altura_bin(no->esq);
+    int alt_dir = obter_altura_bin(no->dir);
+    int altura = 1;
+    if(alt_esq > alt_dir){
+        return altura + alt_esq;
+    }
+    else{
+        return altura + alt_dir;
+    }
+}
+
 void imprimir_em_ordem(Arvore_bin *arv){
     if (arv != NULL){
         imprimir_em_ordem(arv->esq);

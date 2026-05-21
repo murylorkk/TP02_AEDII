@@ -9,6 +9,7 @@
 #include "TAD_vetor.h"
 #include "TAD_arv_bin_pesquisa.h"
 #include "TAD_arv_pacotes.h"
+#include "TAD_arv_AVL.h"
 
 #define TAMANHO 1000000
 #define NUM_BUSCAS 30
@@ -136,5 +137,76 @@ int main() {
 
     printf("\n|=-=-=-=-=-=-=-=-=-=-= Questao 4 =-=-=-=-=-=-=-=-=-=-=|\n");
 
+    int num_execucoes = 10;
+
+    int *dados_q4 = (int *)malloc(TAMANHO * sizeof(int));
+    int alvos_q4[NUM_BUSCAS];
+
+    if (dados_q4 == NULL){
+        printf("Erro de alocacao de memoria para a Questao 4!\n");
+        return 1;
+    }
+
+    printf("Iniciando %d execucoes para arvores com %d elementos...\n", num_execucoes, TAMANHO);
+    printf("--------------------------------------------------------------------------------------\n");
+    printf("| Exec | Tempo Cria BST | Altura BST | T. Busca BST | T. Cria AVL | Altura AVL | T. Busca AVL |\n");
+    printf("--------------------------------------------------------------------------------------\n");
+
+    for (int e = 0; e < num_execucoes; e++) {
+        // preparando dados aleatórios
+        for (int i = 0; i < TAMANHO; i++) {
+            dados_q4[i] = rand64() % (TAMANHO * 2); 
+        }
+        
+        // escolhendo alvos para busca (garantindo que estão no vetor)
+        for (int i = 0; i < NUM_BUSCAS; i++) {
+            alvos_q4[i] = dados_q4[rand64() % TAMANHO];
+        }
+
+        Arvore_bin *bst = criar_arv_bin_pesquisa();
+        
+        double inicio = get_tempo_em_segundos();
+        for (int i = 0; i < TAMANHO; i++) {
+            bst = inserir_arv_bin_pesquisa(bst, dados_q4[i]);
+        }
+        double tempo_cria_bst = get_tempo_em_segundos() - inicio;
+        
+        int altura_bst = obter_altura_bin(bst);
+
+        inicio = get_tempo_em_segundos();
+        for (int i = 0; i < NUM_BUSCAS; i++) {
+            buscar_arv_bin_pesquisa(bst, alvos_q4[i]);
+        }
+        // Calculando a média das 30 consultas
+        double tempo_busca_bst = (get_tempo_em_segundos() - inicio) / NUM_BUSCAS;
+
+        Arvore_AVL *avl = criar_avl();
+        
+        inicio = get_tempo_em_segundos();
+        for (int i = 0; i < TAMANHO; i++) {
+            avl = inserir_avl(avl, dados_q4[i]);
+        }
+        double tempo_cria_avl = get_tempo_em_segundos() - inicio;
+        
+        int altura_avl = obter_altura_avl(avl);
+
+        inicio = get_tempo_em_segundos();
+        for (int i = 0; i < NUM_BUSCAS; i++) {
+            buscar_avl(avl, alvos_q4[i]);
+        }
+
+        // calculando a média das 30 consultas 
+        double tempo_busca_avl = (get_tempo_em_segundos() - inicio) / NUM_BUSCAS;
+
+        printf("| %4d | %11.6fs | %10d | %12.9fs | %11.6fs | %10d | %12.9fs |\n", 
+               e + 1, tempo_cria_bst, altura_bst, tempo_busca_bst, tempo_cria_avl, altura_avl, tempo_busca_avl);
+
+        destruir_arv_bin_pesquisa(bst);
+        destruir_avl(avl);
+    }
+    
+    printf("--------------------------------------------------------------------------------------\n");
+
+    free(dados_q4);
     return 0;
 }

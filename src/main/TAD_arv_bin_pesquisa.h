@@ -16,6 +16,8 @@ Arvore_bin* inserir_arv_bin_pesquisa(Arvore_bin* a, int valor);
 
 int buscar_arv_bin_pesquisa(Arvore_bin* a, int valor);
 
+int obter_altura_bin(Arvore_bin* no);
+
 void imprimir_pre_ordem(Arvore_bin* a);
 
 void imprimir_em_ordem(Arvore_bin* a);
